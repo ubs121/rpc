@@ -5,16 +5,19 @@ package xml
 import (
 	"encoding/xml"
 	"fmt"
+	"log"
 	"net/http"
 )
+
+// TODO: xml-rpc request type
 
 // ReadRequest parses the request object.
 func ParseRequest(r *http.Request, v interface{}) error {
 	decoder := xml.NewDecoder(r.Body)
 	err := decoder.Decode(&v)
 
-	// DEBUG ONLY
-	// log.Printf("xmlrpc << %s: %s\n", r.URL.String(), string(s))
+	// DEBUG
+	log.Printf("xmlrpc << %s: %v\n", r.URL.String(), v)
 
 	return err
 }
@@ -35,6 +38,8 @@ func WriteResponse(w http.ResponseWriter, result interface{}, err error) {
 	} else {
 		xmlstr, _ = rpcResponse2XML(result)
 	}
+
+	log.Printf("xmlrpc >> %s\n", xmlstr)
 
 	w.Header().Set("Content-Type", "text/xml; charset=utf-8")
 	w.Write([]byte(xmlstr))

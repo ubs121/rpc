@@ -22,9 +22,8 @@ func ParseRequest(r *http.Request, v interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&v)
 
-	// DEBUG ONLY
-	s, _ := json.Marshal(v)
-	log.Printf("jsonrpc << %s: %s\n", r.URL.String(), string(s))
+	// DEBUG
+	log.Printf("jsonrpc << %s: %v\n", r.URL.String(), v)
 
 	return err
 }
@@ -38,9 +37,8 @@ func WriteResponse(r *http.Request, w http.ResponseWriter, result interface{}, e
 		doc["Result"] = result
 	}
 
-	// DEBUG ONLY
-	s, _ := json.Marshal(doc)
-	log.Printf("jsonrpc >> %s\n", string(s))
+	// DEBUG
+	log.Printf("jsonrpc >> %v\n", doc)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	setCORSHeaders(r, w)
